@@ -3,7 +3,7 @@
 
 #include <linux/can.h>
 
-void SetupCAN();
+void SetupCAN(void);
 void register_message(int id, void (*func)(struct can_frame));
 
 #endif

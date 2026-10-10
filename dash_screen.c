@@ -30,6 +30,7 @@
 #include "car_interface.h"
 #include "canDefinitions.h"
 #include "stdlib.h"
+#include "stdio.h"
 
 //----------------------------------------------------------------------------------
 // Module Variables Definition (local)
@@ -49,9 +50,14 @@ static double last_delta;
 static int delta_disp_timer;
 static double pred_delta;
 
-//----------------------------------------------------------------------------------
-// Title Screen Functions Definition
-//----------------------------------------------------------------------------------
+void vcu_state_handler(struct can_frame);
+void mc_error_handler(struct can_frame);
+void battery_handler(struct can_frame);
+void time_cmd_handler(struct can_frame);
+void lap(uint16_t);
+
+void printTime(double, Vector2, int, int);
+void printErrors(uint64_t);
 
 void vcu_state_handler(struct can_frame frame) {
     VCU_VCUState state;
@@ -195,7 +201,7 @@ void DrawDashScreen(void)
     DrawTextEx(font, "Battery", pos, font.baseSize*0.2f, 4, WHITE);
     Vector2 pos2 = {550, 140};
     char batstr[10];
-    sprintf(batstr, "%02d%", battery);
+    sprintf(batstr, "%02d", battery);
 
     DrawTextEx(font, batstr, pos2, font.baseSize * 1.0f, 4, battery > 15 ? WHITE : RED);
 
