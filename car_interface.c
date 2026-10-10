@@ -70,7 +70,6 @@ void recieveHandler() {
         struct can_frame* msg = GetCANMsg();
         if (msg == NULL) return;
 
-        printf("recieved message id: %d, data: %lx\n", msg->can_id, *(unsigned long*)(msg->data));
         void (*func)(struct can_frame) = hashMap_get(&registered_messages, msg->can_id);
         if (func != NULL) {
                 func(*msg);
