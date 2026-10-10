@@ -2,7 +2,7 @@
 #include <stdio.h>
 #include <stdint.h>
 #include <string.h>
-#include "hashmap.h"
+#include "hash/hashmap.h"
 
 void vector_init(vector_t* vector){
     vector->ptr = 0;

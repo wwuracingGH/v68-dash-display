@@ -36,7 +36,8 @@ PROJECT_SOURCE_FILES  ?= \
     main.c \
     dash_screen.c \
     car_interface.c \
-    hashmap.c
+    hash/hashmap.c \
+    hash/hashset.c
 
 # raylib library variables
 RAYLIB_PATH           ?= /home/rosapilled/raylib-6.0
