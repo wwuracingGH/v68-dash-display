@@ -129,6 +129,10 @@ void recieveHandler() {
         struct can_frame* msg = GetCANMsg();
         if (msg == NULL) return;
 
+        if (!hashSet_get(blacklist, (int)msg->can_id)) {
+                /* write to file */
+        }
+
         void (*func)(struct can_frame) = hashMap_get(&registered_messages, msg->can_id);
         if (func != NULL) {
                 func(*msg);
