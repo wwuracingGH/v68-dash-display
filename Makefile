@@ -33,8 +33,8 @@ PROJECT_NAME          ?= v68-dash
 PROJECT_VERSION       ?= 1.0
 PROJECT_BUILD_PATH    ?= .
 PROJECT_SOURCE_FILES  ?= \
-    raylib_game.c \
-    screen_title.c \
+    main.c \
+    dash_screen.c \
     car_interface.c \
     hashmap.c
 

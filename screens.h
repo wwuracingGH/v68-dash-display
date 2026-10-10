@@ -26,30 +26,21 @@
 #ifndef SCREENS_H
 #define SCREENS_H
 
-//----------------------------------------------------------------------------------
-// Types and Structures Definition
-//----------------------------------------------------------------------------------
-typedef enum GameScreen { UNKNOWN = -1, LOGO = 0, TITLE, OPTIONS, GAMEPLAY, ENDING } GameScreen;
-
-//----------------------------------------------------------------------------------
-// Global Variables Declaration (shared by several modules)
-//----------------------------------------------------------------------------------
-extern GameScreen currentScreen;
-extern Font font;
-extern Font errfont;
-
 #ifdef __cplusplus
 extern "C" {            // Prevents name mangling of functions
 #endif
 
+extern Font font;
+extern Font errfont;
+
 //----------------------------------------------------------------------------------
 // Title Screen Functions Declaration
 //----------------------------------------------------------------------------------
-void InitTitleScreen(void);
-void UpdateTitleScreen(void);
-void DrawTitleScreen(void);
-void UnloadTitleScreen(void);
-int FinishTitleScreen(void);
+void InitDashScreen(void);
+void UpdateDashScreen(void);
+void DrawDashScreen(void);
+void UnloadDashScreen(void);
+int FinishDashScreen(void);
 
 #ifdef __cplusplus
 }
