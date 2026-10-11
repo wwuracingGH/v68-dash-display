@@ -44,6 +44,10 @@ uint32_t timecode_msg_id = 0x304; // TODO: confirm this
 void construct_blacklist() {
     FILE* bl = fopen(blacklist_fp, "r");
 
+    if (bl == NULL) {
+        bl = fopen("~/v68-dash-display/blacklist.txt", "r");
+    }
+
     hashSet_init(&blacklist);
     char* line = NULL;
     size_t linesize = 1024;
