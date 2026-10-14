@@ -80,7 +80,7 @@ hashPair_t* hashPair_get(hashPair_t* pair, int key){
 
 /* deletes a hashPair */
 void hashPair_delete(hashPair_t** pair){
-    free((*pair)->key);
+    free(&(*pair)->key);
     free((*pair));
     (*pair) = NULL;
 }
@@ -136,7 +136,6 @@ void hashMap_put(hashMap_t* hashMap, int key, void (*func)(struct can_frame)){
     hashMap->items++;
 
     hashMap_grow(hashMap);
-    return NULL;
 }
 
 void hashMap_grow(hashMap_t* hashMap){
