@@ -56,8 +56,8 @@ int main(void)
     InitAudioDevice();      // Initialize audio device
 
     // Load global data (assets that must be available in all screens, i.e. font)
-    font = LoadFontEx("/usr/share/fonts/opentype/urw-base35/NimbusSans-Bold.otf", 192, 0, 250);
-    errfont = LoadFontEx("/usr/share/fonts/opentype/urw-base35/NimbusSansNarrow-Bold.otf", 30, 0, 250);
+    font = LoadFontEx("fonts/NimbusSans-Bold.otf", 192, 0, 250);
+    errfont = LoadFontEx("fonts/NimbusSansNarrow-Bold.otf", 30, 0, 250);
 
     InitDashScreen();
 
