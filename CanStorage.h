@@ -31,9 +31,13 @@
  */
 
 /* sizes in bytes */
-#define HEADERSIZE              (0x10)
+#define FILEHEADERSIZE              (0x10)
 #define STD_FRAME_SIZE          (sizeof(CST_CANStdID_t))
 #define EXT_FRAME_SIZE          (sizeof(CST_CANExtID_t))
+
+typedef struct __attribute__((packed)) {
+    uint16_t crc_checksum_divisor;
+} CST_FileHeader_t;
 
 /* FRAME HEADER START CODE 
  * 
@@ -45,7 +49,7 @@
  * you could try doing a lookahead or a lookbehind by 2 bytes, 
  * depending on how long you thought the last message was. 
  */
-#define CST_HEADER_START_MASK   (0xFE0) /* 0b 1111 1110 0000 */
+#define CST_HEADER_START_MASK   (0xFC0) /* 0b 1111 1100 0000 */
 #define CST_HEADER_START_PAT    (0xB00) /* 0b 1011 0000 0000 */
 
 /**
@@ -89,6 +93,7 @@
  * but will only have 4 data bytes, and therefore will only write 14 bytes (16 including the checksum).
  */
 
+
 /* length of 144 bits / 18 bytes */
 typedef struct __attribute__((packed)) {
     uint64_t header : 12;
@@ -104,6 +109,5 @@ typedef struct __attribute__((packed)) {
     uint32_t id;
     uint8_t data[8];
 } CST_CANExtID_t;
-
 
 #endif

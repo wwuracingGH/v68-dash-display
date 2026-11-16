@@ -28,7 +28,8 @@
 #include <string.h>
 #include "screens.h"
 #include "car_interface.h"
-#include "canDefinitions.h"
+#include "v68-vsw-definitions/canDefinitions.h"
+#include "v68-vsw-definitions/errorDefinitions.h"
 #include "stdlib.h"
 #include "stdio.h"
 
@@ -38,17 +39,22 @@
 static int framesCounter = 0;
 static int finishScreen = 0;
 static int battery = 99;
+
 static char *modes[5] = {"VCU IDLE", "WAITING", "VCU RTD", "RESETING", "NO VCU"};
 static Color modecols[5] = {WHITE, YELLOW, GREEN, RED, GRAY};
 static int mode = 0;
+static int vcu_timeout = 0;
+
 static double lapstarttime = 0;
 static int laps = 0;
 static double bestlap = 3599.99f;
-static uint64_t mc_errors = 0;
-static int vcu_timeout = 0;
 static double last_delta;
 static int delta_disp_timer;
 static double pred_delta;
+
+static uint64_t mc_errors = 0;
+static uint16_t vcu_flags = 0;
+static uint16_t plaus_latch = 0;
 
 void vcu_state_handler(struct can_frame);
 void mc_error_handler(struct can_frame);
@@ -63,6 +69,7 @@ void vcu_state_handler(struct can_frame frame) {
     VCU_VCUState state;
     memcpy(&state, &frame.data, sizeof(state));
     mode = state.state;
+    plaus_latch = state.pLatch;
     vcu_timeout = 120;
 }
 
