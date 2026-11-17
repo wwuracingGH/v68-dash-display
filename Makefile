@@ -34,14 +34,17 @@ PROJECT_VERSION       ?= 1.0
 PROJECT_BUILD_PATH    ?= .
 PROJECT_SOURCE_FILES  ?= \
     main.c \
-    dash_screen.c \
-    car_interface.c \
+    screens/default_screen.c \
+    screens/common.c \
+    can_interface.c \
     hash/hashmap.c \
     hash/hashset.c \
-    crc/crc16dnp.c
+    crc/crc16dnp.c \
+    datalogging.c \
+    car_state.c \
 
 # raylib library variables
-RAYLIB_PATH           ?= /home/rosapilled/raylib-6.0
+RAYLIB_PATH           ?= $$HOME/raylib-6.0
 RAYLIB_INCLUDE_PATH   ?= $(RAYLIB_PATH)/src
 RAYLIB_LIB_PATH       ?= $(RAYLIB_PATH)/src
 # Library type used for raylib: STATIC (.a) or SHARED (.so/.dll)

@@ -1,85 +1,46 @@
-/*******************************************************************************************
-*
-*   raylib game template
-*
-*
-*   Code licensed under an unmodified zlib/libpng license, which is an OSI-certified,
-*   BSD-like license that allows static linking with closed source software
-*
-*   Copyright (c) 2021-2026 Ramon Santamaria (@raysan5)
-*
-********************************************************************************************/
-
+/*
+ * Based loosely on raylib template
+ */
 #include "raylib.h"
-#include "screens.h"    // NOTE: Declares global (extern) variables and screens functions
-
-#if defined(PLATFORM_WEB)
-    #include <emscripten/emscripten.h>      // Emscripten library
-#endif
-
-#include <stdio.h>                          // Required for: printf()
-#include <stdlib.h>                         // Required for: 
-#include <string.h>                         // Required for:
-
-//----------------------------------------------------------------------------------
-// Defines and Macros
-//----------------------------------------------------------------------------------
-// Simple log system to avoid printf() calls if required
-// NOTE: Avoiding those calls, also avoids const strings memory usage
-#define SUPPORT_LOG_INFO
-#if defined(SUPPORT_LOG_INFO)
-    #define LOG(...) printf(__VA_ARGS__)
-#else
-    #define LOG(...)
-#endif
+#include "screens.h"
+#include "can_interface.h"
+#include "car_state.h"
+#include "datalogging.h"
 
 Font font = { 0 };
 Font errfont = { 0 };
 
-static void UpdateDrawFrame(void);          // Update and draw one frame
+static void UpdateDrawFrame(void);
 
-//----------------------------------------------------------------------------------
-// Global Variables Definition (local to this module)
-//----------------------------------------------------------------------------------
-static const int screenWidth = 800;
-static const int screenHeight = 300;
+static const int screenWidth = 1280;
+static const int screenHeight = 480;
 
-//----------------------------------------------------------------------------------
-// Program main entry point
-//----------------------------------------------------------------------------------
 int main(void)
 {
-    // Initialization
-    //---------------------------------------------------------
-    InitWindow(screenWidth, screenHeight, "raylib game template");
+    InitWindow(screenWidth, screenHeight, "v68-dash-display");
 
-    InitAudioDevice();      // Initialize audio device
+    SetupCAN();
+    CST_Setup(GetTime());
+    construct_blacklist();
+    InitAudioDevice();      /* maybe if we need audio ? unlikely tho */
 
-    // Load global data (assets that must be available in all screens, i.e. font)
-    font = LoadFontEx("fonts/NimbusSans-Bold.otf", 192, 0, 250);
-    errfont = LoadFontEx("fonts/NimbusSansNarrow-Bold.otf", 30, 0, 250);
+    /* these fonts come with the raspberry pi */
+    font = LoadFontEx("fonts/NimbusSans-Bold.otf", 300, 0, 250);
+    errfont = LoadFontEx("fonts/NimbusSansNarrow-Bold.otf", 48, 0, 250);
 
-    InitDashScreen();
+    SetTargetFPS(60); /* the dash display doesn't run over 60 fps so it's kinda decided for us */ 
 
-    SetTargetFPS(60);       // Set our game to run at 60 frames-per-second
-    //--------------------------------------------------------------------------------------
-
-    // Main game loop
-    while (!WindowShouldClose())    // Detect window close button or ESC key
+    /* set to escape key by default. */
+    while (!WindowShouldClose())
     {
         UpdateDrawFrame();
     }
-    
-    UnloadDashScreen();    
-    
-    // Unload global data loaded
+
     UnloadFont(font);
     UnloadFont(errfont);
 
-    CloseAudioDevice();     // Close audio context
-
-    CloseWindow();          // Close window and OpenGL context
-    //--------------------------------------------------------------------------------------
+    CloseAudioDevice();
+    CloseWindow();
 
     return 0;
 }
@@ -87,11 +48,11 @@ int main(void)
 // Update and draw game frame
 static void UpdateDrawFrame(void)
 {
-    UpdateDashScreen();
+    CST_Update(); /* update carstate timers */
 
     BeginDrawing();
         ClearBackground(RAYWHITE);
-        DrawDashScreen();
+        DrawDefaultScreen();
     EndDrawing();
     //----------------------------------------------------------------------------------
 }

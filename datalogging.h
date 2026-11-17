@@ -2,6 +2,7 @@
 #define _DATALOGGING_H_
 #include <stdint.h>
 
+void construct_blacklist(void);
 void settimeandstartlogging(struct can_frame);
 void store_frame(struct can_frame, uint64_t);
 

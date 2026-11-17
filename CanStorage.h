@@ -49,8 +49,8 @@ typedef struct __attribute__((packed)) {
  * you could try doing a lookahead or a lookbehind by 2 bytes, 
  * depending on how long you thought the last message was. 
  */
-#define CST_HEADER_START_MASK   (0xFC0) /* 0b 1111 1100 0000 */
-#define CST_HEADER_START_PAT    (0xB00) /* 0b 1011 0000 0000 */
+#define CST_HEADER_START_MASK   (0xFC) /* 0b 1111 1100 0000 */
+#define CST_HEADER_START_PAT    (0xB0) /* 0b 1011 0000 0000 */
 
 /**
  * FRAME HEADER INFORMATION 
@@ -63,19 +63,14 @@ typedef struct __attribute__((packed)) {
  */
 
 /* is it on bus 1 or bus 2 (single bit) */
-#define CST_HEADER_BUS_Pos      (5UL)
+#define CST_HEADER_BUS_Pos      (1UL)
 #define CST_HEADER_BUS_Msk      (0b1UL << CST_HEADER_BUS_Pos)
 
 /* is the id extended (single bit)
  * controls what struct the frame uses, 1 is for the extended identifier
  */
-#define CST_HEADER_EXID_Pos     (4UL)
+#define CST_HEADER_EXID_Pos     (0UL)
 #define CST_HEADER_EXID_Msk     (0b1UL << CST_HEADER_EXID_Pos)
-
-/* data length code for the can bus 
-*/
-#define CST_HEADER_DLC_Pos      0UL
-#define CST_HEADER_DLC_Msk      (0b1111UL << CST_HEADER_DLC_Pos)
 
 /* REST OF THE CAN FRAME
  * 
@@ -96,7 +91,8 @@ typedef struct __attribute__((packed)) {
 
 /* length of 144 bits / 18 bytes */
 typedef struct __attribute__((packed)) {
-    uint64_t header : 12;
+    uint64_t header : 8;
+    uint64_t dlc    : 4;
     uint64_t timestamp : 52;
     uint16_t id;
     uint8_t data[8];
@@ -104,7 +100,8 @@ typedef struct __attribute__((packed)) {
 
 /* length of 160 bits / 20 bytes */
 typedef struct __attribute__((packed)) {
-    uint64_t header : 12;
+    uint64_t header : 8;
+    uint64_t dlc    : 4;
     uint64_t timestamp : 52;
     uint32_t id;
     uint8_t data[8];

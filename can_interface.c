@@ -1,5 +1,3 @@
-#include "car_interface.h"
-
 #include <sys/socket.h>
 #include <linux/sockios.h> /* what */
 #include <sys/ioctl.h>
@@ -15,6 +13,7 @@
 
 #include "hash/hashmap.h"
 #include "datalogging.h"
+#include "can_interface.h"
 
 /*
  * prototypes
@@ -25,13 +24,12 @@ void SetupCAN(void);
 
 struct can_frame* GetCANMsg(void);
 
-
+int scan;
+hashMap_t registered_messages;
 const uint32_t timecode_msg_id = 0x400; // TODO: confirm this
 
 /* connect to all availible can busses */
 void SetupCAN() {
-        construct_blacklist();
-        
         struct sockaddr_can addr;
         hashMap_init(&registered_messages);
 
@@ -96,16 +94,14 @@ void recieveHandler(int a) {
                 struct can_frame msgcpy = *msg;
                 uint64_t timestamp = readtime;
 
-                if (!hashSet_get(&blacklist, (int)msgcpy.can_id)) {
-                        store_frame(msgcpy, timestamp);
-                }
+                store_frame(msgcpy, timestamp);
 
                 void (*func)(struct can_frame) = hashMap_get(&registered_messages, msgcpy.can_id);
                 if (func != NULL) {
                         func(msgcpy);
                 }
                 
-                struct can_frame* msg = GetCANMsg();
+                msg = GetCANMsg();
         }
 }
 

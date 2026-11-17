@@ -1,6 +1,4 @@
 #include <sys/socket.h>
-#include <linux/sockios.h> /* what */
-#include <sys/ioctl.h>
 #include <sys/time.h>
 #include <net/if.h>
 #include <linux/can/raw.h>
@@ -8,21 +6,20 @@
 #include <stdio.h>
 #include <pthread.h>
 #include <signal.h>
-#include <fcntl.h>
 #include <unistd.h>
 
+#include "datalogging.h"
 #include "CanStorage.h"
 #include "hash/hashset.h"
 #include "crc/crc16dnp.h"
 
-const char* blacklist_fp = "blacklist.txt";
+const char* blacklist_fp = "v68-vsw-definitions/blacklist.txt";
 hashSet_t blacklist;
 FILE* output = NULL;
 
-int scan;
-hashMap_t registered_messages;
-
 void store_frame(struct can_frame msg, uint64_t timestamp) {
+        if (hashSet_get(&blacklist, (int)msg.can_id))
+                return;
         int busnum = 0;
         int dlc = msg.len8_dlc & 0xF;
         int extra_bytes = 8 - msg.len;
@@ -83,7 +80,8 @@ void construct_blacklist() {
     FILE* bl = fopen(blacklist_fp, "r");
 
     if (bl == NULL) {
-        bl = fopen("~/v68-dash-display/blacklist.txt", "r");
+        fprintf(stderr, "BLACKLIST FILE AT [%s] NOT FOUND!!!\n", blacklist_fp);
+        return;
     }
 
     hashSet_init(&blacklist);
