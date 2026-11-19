@@ -22,4 +22,13 @@ double CST_GetSpeed(void);
 double CST_GetAccelerationX(void);
 double CST_GetAccelerationY(void);
 
+typedef struct {
+    double fl_wheelspeed;
+    double fr_wheelspeed;
+    double rl_wheelspeed;
+    double rr_wheelspeed;
+} Wheelspeeds_Groundspeed;
+
+Wheelspeeds_Groundspeed CST_GetWheelspeeds(void);
+
 #endif

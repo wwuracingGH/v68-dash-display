@@ -16,6 +16,7 @@ Color Color_MC_Error[3]  = {    YELLOW,  BROWN, BLACK };
 void printTime(double, Vector2, int, int);
 void printErrors(uint64_t, uint32_t, uint16_t, int, int);
 void printErrorAtPos(int idx, int scrollpixels, const char* string, Color rectColor, Color outlineColor, Color textColor);
+int counterrors(uint64_t mc_errors, uint32_t bms_errors, uint16_t vcu_errors, int platch);
 
 void printTime(double elapsedtime, Vector2 pos, int size, int has_sign) {
     char timestr[20];

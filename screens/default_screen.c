@@ -45,35 +45,46 @@ void DrawDefaultScreen()
     const double time_to_blink_delta = 2.0f;
     const double delta_blink_period = 0.25f;
 
+    const double xstart1 = 0.0125 * SET_SCREEN_WIDTH;
+    const double xstart2 = 0.5 * SET_SCREEN_WIDTH;
+    const double xstart3 = (0.6875 * SET_SCREEN_WIDTH);
+
+    const double ystart1 = SET_SCREEN_HEIGHT * ( 4.0 / 15.0);
+    const double ystart2 = SET_SCREEN_HEIGHT * ( 7.0 / 60.0);
+    const double ystart3 = SET_SCREEN_HEIGHT * ( 7.0 / 15.0);
+    const double ystart4 = SET_SCREEN_HEIGHT * ( 1.0 / 10.0);
+    const double ystart5 = SET_SCREEN_HEIGHT * (37.0 / 60.0);
+    const double ystart6 = SET_SCREEN_HEIGHT * (11.0 / 15.0);
+
     Color bg = (Color){0, 0, 0, 255};
     DrawRectangle(0, 0, GetScreenWidth(), GetScreenHeight(), bg);
-    Vector2 pos = { 880, 128 };
+    const Vector2 pos = { xstart3, ystart1 };
     DrawTextEx(font, "Battery", pos, font.baseSize*0.2f, 4, WHITE);
-    Vector2 pos2 = { 880, 224 };
+    const Vector2 pos2 = { xstart3, ystart3 };
     char batstr[10];
     sprintf(batstr, "%02d", battery);
 
     DrawTextEx(font, batstr, pos2, font.baseSize * 1.0f, 4, battery > 15 ? WHITE : RED);
 
-    Vector2 pos3 = { 880, 48 };
+    Vector2 pos3 = { xstart3, ystart4 };
     DrawTextEx(font, modes[vcu_state], pos3, font.baseSize*0.2f, 4, modecols[vcu_state]);
 
-    DrawTextEx(font, "Best Time", (Vector2){ 16, 56 }, font.baseSize*0.2f, 4, WHITE);
-    printTime(bestlap, (Vector2){ 16, 128}, font.baseSize*0.5f, 0);
+    DrawTextEx(font, "Best Time", (Vector2){ xstart1, ystart2 }, font.baseSize*0.2f, 4, WHITE);
+    printTime(bestlap, (Vector2){ xstart1, ystart1 }, font.baseSize*0.5f, 0);
     
     if (elapsedlaptime < time_to_blink_delta) {
-        DrawTextEx(font, "Last Delta", (Vector2){ 16, 296 }, font.baseSize*0.2f, 4, WHITE);
+        DrawTextEx(font, "Last Delta", (Vector2){ xstart1, ystart5 }, font.baseSize*0.2f, 4, WHITE);
         if ((int)(elapsedlaptime / delta_blink_period) % 2)
-            printTime(CST_GetDeltaTime(), (Vector2){ 16, 352 }, font.baseSize*0.5f, 1);
+            printTime(CST_GetDeltaTime(), (Vector2){ xstart1, ystart6 }, font.baseSize*0.5f, 1);
     } else {
-        DrawTextEx(font, "Current Time", (Vector2){16, 296}, font.baseSize*0.2f, 4, WHITE);
-        printTime(elapsedlaptime, (Vector2){16, 352}, font.baseSize*0.5f, 0);
+        DrawTextEx(font, "Current Time", (Vector2){ xstart1, ystart5}, font.baseSize*0.2f, 4, WHITE);
+        printTime(elapsedlaptime, (Vector2){ xstart1, 352}, font.baseSize*0.5f, 0);
     }
 
-    DrawTextEx(font, "Lap", (Vector2){640, 56}, font.baseSize*0.2f, 4, WHITE);
+    DrawTextEx(font, "Lap", (Vector2){xstart2, ystart2}, font.baseSize*0.2f, 4, WHITE);
     char lapstr[10];
     sprintf(lapstr, "%02d", CST_GetLaps());
-    DrawTextEx(font, lapstr, (Vector2){640, 128}, font.baseSize*0.5f, 4, WHITE);
+    DrawTextEx(font, lapstr, (Vector2){xstart2, SET_SCREEN_HEIGHT * 0.1}, font.baseSize*0.5f, 4, WHITE);
 
     printErrors(CST_GetMCFaults(), CST_GetBMSFaults(), CST_GetVCUFaults(), CST_GetVCUPlausabilityLatch(), scroll);
 }

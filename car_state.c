@@ -17,6 +17,8 @@ static double speed = 15.0;
 static double accelX;
 static double accelY;
 
+Wheelspeeds_Groundspeed wheelspeeds;
+
 struct {
     double lapstarttime;
     int laps;
@@ -26,10 +28,10 @@ struct {
     double pred_delta;
 } lapTiming = {0, 0, 3599.99, 0, 0, 0.0};
 
-static uint64_t mc_errors = 0b100010000010001;
-static uint32_t bms_errors = 1 << 16 | 1 << 20;
-static uint16_t vcu_flags = 1 << 14 | 1 << 15;
-static uint16_t plaus_latch = 1;
+static uint64_t mc_errors = 0;//0b100010000010001;
+static uint32_t bms_errors = 0;//1 << 16 | 1 << 20;
+static uint16_t vcu_flags = 0;//1 << 14 | 1 << 15;
+static uint16_t plaus_latch = 0;//1;
 
 void vcu_state_handler(struct can_frame);
 void mc_error_handler(struct can_frame);
@@ -37,6 +39,17 @@ void bms_error_handler(struct can_frame);
 void battery_handler(struct can_frame);
 void time_cmd_handler(struct can_frame);
 void lap(uint16_t);
+
+void vcu_wheelspeed_handler(struct can_frame frame) {
+    const double wheel_radius = 0.2;
+    uint16_t speeds[4];
+    memcpy(&speed, &frame.data, 8);
+    /* might be 1024 */
+    wheelspeeds.fl_wheelspeed = (double)speeds[0] * 1000.0 * wheel_radius;
+    wheelspeeds.fr_wheelspeed = (double)speeds[1] * 1000.0 * wheel_radius;
+    wheelspeeds.rl_wheelspeed = (double)speeds[2] * 1000.0 * wheel_radius;
+    wheelspeeds.rr_wheelspeed = (double)speeds[3] * 1000.0 * wheel_radius;
+}
 
 void vcu_estimator_handler(struct can_frame frame) {
     uint16_t ctrl[4];
@@ -105,9 +118,9 @@ void CST_Setup(double flstarttime) {
 
     register_message(VCU_CANID_VCU_STATE, vcu_state_handler);
     register_message(VCU_CANID_CTRL_VEC, vcu_ctrl_handler);
+    register_message(256, vcu_wheelspeed_handler);
+    register_message(261, vcu_estimator_handler);
     register_message(MC_CANID_FAULTCODES, mc_error_handler);
-    register_message(MC_CANID_FAULTCODES, mc_error_handler);
-    register_message(261, mc_error_handler);
     register_message(0x203, bms_error_handler);
     register_message(0x205, battery_handler);
     register_message(DL_CANID_DASH_COMMAND, time_cmd_handler);
@@ -168,4 +181,8 @@ double CST_GetAccelerationX(void) {
 
 double CST_GetAccelerationY(void) {
     return accelY;
+}
+
+Wheelspeeds_Groundspeed CST_GetWheelspeeds(void) {
+    return wheelspeeds;
 }
