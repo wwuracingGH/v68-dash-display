@@ -45,16 +45,16 @@ void DrawDefaultScreen()
     const double time_to_blink_delta = 2.0f;
     const double delta_blink_period = 0.25f;
 
-    const double xstart1 = 0.0125 * SET_SCREEN_WIDTH;
-    const double xstart2 = 0.5 * SET_SCREEN_WIDTH;
-    const double xstart3 = (0.6875 * SET_SCREEN_WIDTH);
+    const double xstart1 = 0.0125 * SCREEN_WIDTH;
+    const double xstart2 = 0.5 * SCREEN_WIDTH;
+    const double xstart3 = (0.6875 * SCREEN_WIDTH);
 
-    const double ystart1 = SET_SCREEN_HEIGHT * ( 4.0 / 15.0);
-    const double ystart2 = SET_SCREEN_HEIGHT * ( 7.0 / 60.0);
-    const double ystart3 = SET_SCREEN_HEIGHT * ( 7.0 / 15.0);
-    const double ystart4 = SET_SCREEN_HEIGHT * ( 1.0 / 10.0);
-    const double ystart5 = SET_SCREEN_HEIGHT * (37.0 / 60.0);
-    const double ystart6 = SET_SCREEN_HEIGHT * (11.0 / 15.0);
+    const double ystart1 = SCREEN_HEIGHT * ( 4.0 / 15.0);
+    const double ystart2 = SCREEN_HEIGHT * ( 7.0 / 60.0);
+    const double ystart3 = SCREEN_HEIGHT * ( 7.0 / 15.0);
+    const double ystart4 = SCREEN_HEIGHT * ( 1.0 / 10.0);
+    const double ystart5 = SCREEN_HEIGHT * (37.0 / 60.0);
+    const double ystart6 = SCREEN_HEIGHT * (11.0 / 15.0);
 
     Color bg = (Color){0, 0, 0, 255};
     DrawRectangle(0, 0, GetScreenWidth(), GetScreenHeight(), bg);
@@ -84,7 +84,7 @@ void DrawDefaultScreen()
     DrawTextEx(font, "Lap", (Vector2){xstart2, ystart2}, font.baseSize*0.2f, 4, WHITE);
     char lapstr[10];
     sprintf(lapstr, "%02d", CST_GetLaps());
-    DrawTextEx(font, lapstr, (Vector2){xstart2, SET_SCREEN_HEIGHT * 0.1}, font.baseSize*0.5f, 4, WHITE);
+    DrawTextEx(font, lapstr, (Vector2){xstart2, ystart1}, font.baseSize*0.5f, 4, WHITE);
 
     printErrors(CST_GetMCFaults(), CST_GetBMSFaults(), CST_GetVCUFaults(), CST_GetVCUPlausabilityLatch(), scroll);
 }
