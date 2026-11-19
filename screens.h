@@ -11,7 +11,8 @@ extern "C" {            // Prevents name mangling of functions
 extern Font font;
 extern Font errfont;
 
-void DrawDefaultScreen(void);
+void DrawDefaultScreen();
+void DrawBrakeTestScreen();
 
 #ifdef __cplusplus
 }

@@ -5,10 +5,16 @@
 #include <stdio.h>
 
 char *modes[5] = {"VCU IDLE", "WAITING", "VCU RTD", "RESETING", "NO VCU"};
-Color modecols[5] = {WHITE, YELLOW, GREEN, RED, GRAY};
+Color modecols[5] = {WHITE, YELLOW, RED, RED, GRAY};
+
+Color Color_BMS_Error[3] = {     BLACK,    RED, WHITE };
+Color Color_VCU_Error[3] = {  DARKBLUE,   BLUE, WHITE };
+Color Color_MC_Error[3]  = {    YELLOW,  BROWN, BLACK };
+
+#define CIRCULAR_INC(x, y) (x)++; (x) %= (y);
 
 void printTime(double, Vector2, int, int);
-void printErrors(uint64_t, uint16_t, int);
+void printErrors(uint64_t, uint32_t, uint16_t, int, int);
 void printErrorAtPos(int idx, int scrollpixels, const char* string, Color rectColor, Color outlineColor, Color textColor);
 
 void printTime(double elapsedtime, Vector2 pos, int size, int has_sign) {
@@ -44,33 +50,50 @@ void printErrorAtPos(int idx, int scrollpixels, const char* string, Color rectCo
     DrawTextEx(errfont, string, (Vector2){text_x_start, box_start + text_y_offset}, 50, 1, textColor);
 }
 
-void printErrors(uint64_t mc_errors, uint16_t vcu_errors, int plausability_latch) {
-    int n_error = 0;
+int counterrors(uint64_t mc_errors, uint32_t bms_errors, uint16_t vcu_errors, int platch) {
+    return __builtin_popcount(mc_errors) + __builtin_popcount(bms_errors) + __builtin_popcount(vcu_errors) + !!platch;
+}
+
+void printErrors(uint64_t mc_errors, uint32_t bms_errors, uint16_t vcu_errors, int plausability_latch, int start_error) {
+    int max_errors = counterrors(mc_errors, bms_errors, vcu_errors, plausability_latch) - 1;
+    int n_error = start_error;
     for (int i = 0; i < 32; i++) {
         if (mc_errors & (1UL << i)) {
-            printErrorAtPos(n_error, 0, MC_Post_Errors[i], YELLOW, BROWN, BLACK);
-
-            n_error++;
+            printErrorAtPos(n_error, 0, MC_Post_Errors[i], Color_MC_Error[0], Color_MC_Error[1], Color_MC_Error[2]);
+            CIRCULAR_INC(n_error, max_errors);
         }
     }
 
     for (int i = 0; i < 32; i++) {
         if (mc_errors & (1ULL << (i + 32))) {    
-            printErrorAtPos(n_error, 0, MC_Run_Errors[i], YELLOW, BROWN, BLACK);
+            printErrorAtPos(n_error, 0, MC_Run_Errors[i], Color_MC_Error[0], Color_MC_Error[1], Color_MC_Error[2]);
+            CIRCULAR_INC(n_error, max_errors);
+        }
+    }
 
-            n_error++;
+    for (int i = 0; i < 16; i++) {
+        if (bms_errors & (1ULL << i)) {    
+            printErrorAtPos(n_error, 0, BMS_DTC_Strings_1[i], Color_BMS_Error[0], Color_BMS_Error[1], Color_BMS_Error[2]);
+            CIRCULAR_INC(n_error, max_errors);
+        }
+    }
+
+    for (int i = 0; i < 16; i++) {
+        if (bms_errors & (1ULL << (i + 16))) {    
+            printErrorAtPos(n_error, 0, BMS_DTC_Strings_2[i], Color_BMS_Error[0], Color_BMS_Error[1], Color_BMS_Error[2]);
+            CIRCULAR_INC(n_error, max_errors);
         }
     }
 
     for (int i = 0; i < 16; i++) {
         if (vcu_errors & APPS_FAULT_MASK & (1ULL << i)) {    
-            printErrorAtPos(n_error, 0, VCU_Faults_String[i], DARKBLUE, BLUE, WHITE);
+            printErrorAtPos(n_error, 0, VCU_Faults_String[i], Color_VCU_Error[0], Color_VCU_Error[1], Color_VCU_Error[2]);
 
-            n_error++;
+            CIRCULAR_INC(n_error, max_errors);
         }
     }
 
     if (plausability_latch) {
-        printErrorAtPos(n_error, 0, VCU_Latch_String, DARKGREEN, GREEN, WHITE);
+        printErrorAtPos(n_error, 0, VCU_Latch_String, Color_VCU_Error[0], Color_VCU_Error[1], Color_VCU_Error[2]);
     }
 }

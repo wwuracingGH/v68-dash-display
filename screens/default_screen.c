@@ -31,8 +31,11 @@
 #include "common.h"
 
 // Title Screen Draw logic
-void DrawDefaultScreen(void)
+void DrawDefaultScreen()
 {
+    static unsigned char scroll = 0;
+    if (IsKeyDown(KEY_DOWN)) scroll++;
+
     int vcu_state = CST_VCUState();
     int battery = CST_BatteryPercentage();
     double elapsedlaptime = CST_GetElapsedLapTime(GetTime());
@@ -72,5 +75,5 @@ void DrawDefaultScreen(void)
     sprintf(lapstr, "%02d", CST_GetLaps());
     DrawTextEx(font, lapstr, (Vector2){640, 128}, font.baseSize*0.5f, 4, WHITE);
 
-    printErrors(CST_GetMCFaults(), CST_GetVCUFaults(), CST_GetVCUPlausabilityLatch());
+    printErrors(CST_GetMCFaults(), CST_GetBMSFaults(), CST_GetVCUFaults(), CST_GetVCUPlausabilityLatch(), scroll);
 }

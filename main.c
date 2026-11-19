@@ -7,6 +7,8 @@
 #include "car_state.h"
 #include "datalogging.h"
 
+#define NUM_SCREENS 2
+
 Font font = { 0 };
 Font errfont = { 0 };
 
@@ -14,6 +16,9 @@ static void UpdateDrawFrame(void);
 
 static const int screenWidth = 1280;
 static const int screenHeight = 480;
+
+int current_screen = 0;
+void (*screendrawfunc[NUM_SCREENS])() = {DrawDefaultScreen, DrawBrakeTestScreen};
 
 int main(void)
 {
@@ -49,10 +54,14 @@ int main(void)
 static void UpdateDrawFrame(void)
 {
     CST_Update(); /* update carstate timers */
+    if (IsKeyDown(KEY_RIGHT)) current_screen++;
+    
+    if (current_screen == -1) current_screen = NUM_SCREENS - 1;
+    if (current_screen == NUM_SCREENS) current_screen = 0;
 
     BeginDrawing();
         ClearBackground(RAYWHITE);
-        DrawDefaultScreen();
+        screendrawfunc[current_screen]();    
     EndDrawing();
     //----------------------------------------------------------------------------------
 }

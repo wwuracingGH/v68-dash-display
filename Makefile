@@ -35,6 +35,7 @@ PROJECT_BUILD_PATH    ?= .
 PROJECT_SOURCE_FILES  ?= \
     main.c \
     screens/default_screen.c \
+    screens/brake_test.c \
     screens/common.c \
     can_interface.c \
     hash/hashmap.c \
@@ -364,7 +365,7 @@ ifeq ($(PLATFORM),PLATFORM_DESKTOP)
 endif
 ifeq ($(PLATFORM),PLATFORM_DRM)
 	find . -type f -executable -delete
-	rm -fv *.o
+	rm -fv *.o **/*.o
 endif
 ifeq ($(PLATFORM),PLATFORM_WEB)
     ifeq ($(PLATFORM_OS),WINDOWS)

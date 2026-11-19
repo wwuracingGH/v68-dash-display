@@ -8,7 +8,7 @@ extern char* modes[];
 extern Color modecols[];
 
 void printTime(double, Vector2, int, int);
-void printErrors(uint64_t, uint16_t, int);
+void printErrors(uint64_t, uint32_t, uint16_t, int, int);
 void printErrorAtPos(int idx, int scrollpixels, const char* string, Color rectColor, Color outlineColor, Color textColor);
 
 #endif
